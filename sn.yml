@@ -1,0 +1,34 @@
+---
+- name: Automate SNOW 
+  hosts: localhost
+  connection: local
+  collections:
+    - servicenow.itsm
+
+  tasks:
+    # Always give your tasks a useful name
+      # This task leverages the 'incident' module from the 'itsm' collection 
+      # within the 'servicenow' namespace
+    - name: Create incident
+      servicenow.itsm.incident:
+        state: new
+        instance:
+          host: "{{ sn_host }}"
+          username: "{{ sn_username }}"
+          password: "{{ sn_password }}"
+        caller: "{{ lookup('env', 'SN_USERNAME') }}"
+        short_description: "User created a new incident using Ansible Automation Platform"
+        description: "User {{ lookup('env', 'SN_USERNAME') }} successfully created a new incident!"
+        impact: low
+        urgency: low
+      register: new_incident
+
+    - set_fact:
+        incident_number_cached: "{{ new_incident.record.number }}"
+        cacheable: true
+
+    - debug:
+        msg: "A new incident has been created: {{ new_incident.record.number }}"
+
+    - debug:
+        var: new_incident
