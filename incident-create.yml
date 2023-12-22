@@ -34,4 +34,7 @@
       debug:
         msg: "Um novo incidente foi criado {{ new_incident.record.number }}"
 
-
+    - name: Set host IP address variable
+      set_stats:
+        data:
+          incident_number: "{{ new_incident.record.number }}"

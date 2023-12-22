@@ -1,0 +1,27 @@
+---
+- name: Automate SNOW - Incident Closed
+  hosts: localhost
+  connection: local
+  vars:
+    sn_close_code: Solved (Permanently)
+    sn_close_notes: "This incident has been resolved through automated means via Ansible, and as a result, the ticket will now be marked as closed."
+    incident_number: INC0013398
+  collections:
+    - servicenow.itsm
+
+  tasks:
+    - name: Closed incident
+      servicenow.itsm.incident:
+        instance:
+          host: "{{ sn_host }}"
+          username: "{{ sn_username }}"
+          password: "{{ sn_password }}"
+        state: closed
+        close_code: "{{ sn_close_code }}"
+        close_notes: "{{ sn_close_notes }}"
+        number: "{{ incident_number }}"
+      register: close_incident
+
+    - name: Msg incident
+      debug:
+        msg: "Incidente {{ incident_number }} foi fechado com sucesso" 

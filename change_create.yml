@@ -1,0 +1,38 @@
+- name: Automate SNOW - Change Create
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  vars:
+    sn_short_description: "abertura de change"
+    sn_description: "abertura de change via Ansible"
+    sn_priority: moderate
+    sn_risk: low
+    sn_impact: low
+  collections:
+    - servicenow.itsm
+
+  tasks:
+    - name: Create change request for provisioning server
+      servicenow.itsm.change_request:
+        instance:
+          host: "{{ sn_host }}"
+          username: "{{ sn_username }}"
+          password: "{{ sn_password }}"
+        state: new
+        type: standard
+        category: service
+        requested_by: "{{ sn_username }}"
+        short_description: "{{ sn_short_description }}"
+        description: "{{ sn_description }}"
+        priority: "{{ sn_priority }}"
+        risk: "{{ sn_risk }}"
+        impact: "{{ sn_impact }}"
+      register: change_output
+
+    - debug:
+        var: change_output.record.number
+
+    - name: Set host IP address variable
+      set_stats:
+        data:
+          change_number: "{{ change_output.record.number }}"
