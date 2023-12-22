@@ -1,0 +1,23 @@
+---
+- name: Gerenciamento Genérico de Serviços
+  hosts: web01.aroque.com.br
+  tasks:
+    - name: Obter últimas 20 linhas do log de acesso do Apache
+      ansible.builtin.shell: tail -n 20 /var/log/httpd/access_log
+      register: log_acesso
+
+    - name: Exibir últimas 20 linhas do log de acesso
+      ansible.builtin.debug:
+        msg: "{{ log_acesso.stdout }}"
+        
+    - name: definir variavel de log
+      set_stats:
+        data:
+          log_acesso: "{{ log_acesso.stdout }}"
+
+    - name: Coletar status do serviço
+      ansible.builtin.service_facts:
+
+    - name: Exibir status do serviço
+      ansible.builtin.debug:
+        var: ansible_facts.services[httpd + '.service']

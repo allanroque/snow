@@ -1,0 +1,21 @@
+---
+- name: Gerenciamento Genérico de Serviços
+  hosts: web01.aroque.com.br
+  vars:
+    nome_do_servico:
+    estado_do_servico:
+    persistencia_do_servico:
+
+  tasks:
+    - name: Configurar estado do serviço
+      ansible.builtin.service:
+        name: "{{ nome_do_servico }}"
+        state: "{{ estado_do_servico }}"
+        enabled: "{{ persistencia_do_servico }}"
+
+    - name: Coletar status do serviço
+      ansible.builtin.service_facts:
+
+    - name: Exibir status do serviço
+      ansible.builtin.debug:
+        var: ansible_facts.services[nome_do_servico + '.service']
