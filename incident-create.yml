@@ -2,6 +2,7 @@
 - name: Criar incidente no SNOW 
   hosts: localhost
   connection: local
+  gather_facts: false
   vars:
     sn_short_description: "Automação Servicenow"
     sn_description: "Incidente criado via Ansible"
