@@ -18,6 +18,10 @@
             active: = true
       register: incidents
 
+    - name: debug
+      debug:
+        var: incidents
+
     - name: query incident number and creation time 
       set_fact:
         incident_list: '{{ incident_list + [{"number": item.number, "opened_at": item.opened_at}] }}'

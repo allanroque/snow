@@ -1,41 +1,37 @@
 ---
-- name: Automate SNOW 
+- name: Criar incidente no SNOW 
   hosts: localhost
   connection: local
+  vars:
+    sn_short_description: "Automação Servicenow"
+    sn_description: "Incidente criado via Ansible"
+    sn_impact: low
+    sn_urgency: low
   collections:
     - servicenow.itsm
 
   tasks:
-
-    # Always give your tasks a useful name
-    - name: Create incident
-
-      # This task leverages the 'incident' module from the 'itsm' collection 
-      # within the 'servicenow' namespace
+    - name: Criar incidente no SNOW
       servicenow.itsm.incident:
-
         state: new
+        instance:
+          host: "{{ sn_host }}"
+          username: "{{ sn_username }}"
+          password: "{{ sn_password }}"
         caller: "{{ lookup('env', 'SN_USERNAME') }}"
-
-        # Feel free to modify this line
-        short_description: "User created a new incident using Ansible Automation Platform"
-
-        # These fields can also contain different variables from previous workflow steps,
-        # environment variables, etc.. Feel free to modify this line
-        description: "User {{ lookup('env', 'SN_USERNAME') }} successfully created a new incident!"
-        impact: low
-        urgency: low
-      
-      # Register the output of this task for use within subsequent tasks
+        short_description: "{{ sn_short_description }}"
+        description: "{{ sn_description }}"
+        impact: "{{ sn_impact }}"
+        urgency: "{{ sn_urgency }}"
       register: new_incident
 
-    - set_fact:
+    - name: coletar informações do incidente
+      set_fact:
         incident_number_cached: "{{ new_incident.record.number }}"
         cacheable: true
 
-    - debug:
-
-        # Use the output of the incident creation task to display the incident number
-        msg: "A new incident has been created: {{ new_incident.record.number }}"
+    - name: Mostrar informações do incidente
+      debug:
+        msg: "Um novo incidente foi criado {{ new_incident.record.number }}"
 
 
