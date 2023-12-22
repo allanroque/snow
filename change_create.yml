@@ -21,7 +21,7 @@
         state: new
         type: standard
         category: service
-        requested_by: "{{ sn_username }}"
+        requested_by: "{{ snow_username }}"
         short_description: "{{ sn_short_description }}"
         description: "{{ sn_description }}"
         priority: "{{ sn_priority }}"
